@@ -75,9 +75,9 @@ if __name__ == "__main__":
 
             avg_metrics[submission]["score"] = score
 
-    # Print the aggregated metrics for all submissions
-    for submission, metrics in avg_metrics.items():
-        print(f"Metrics for {submission}:")
-        for metric_name, metric_value in metrics.items():
-            print(f"{metric_name}: {metric_value}")
-        print("\n")
+        # Print the aggregated metrics for all submissions
+        for submission, metrics in avg_metrics.items():
+            print(f"Metrics for {submission}:")
+            for metric_name, metric_value in metrics.items():
+                print(f"{metric_name}: {metric_value}")
+            print("\n")
