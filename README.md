@@ -73,11 +73,31 @@ This folder is where all the submitted solutions will be stored. Each solution s
 
 Each solution should be submitted as a zip file containing the solution folder with the structure defined above. The zip file should be named as solution_name.zip and should be sent to the organizers before the submission deadline. The organizers will extract the zip files and place the solution folders in the SUBMISSIONS folder for evaluation. It is important to ensure that the submitted solution follows the defined structure and includes all the necessary files for evaluation. The organizers will not be responsible for any issues arising from incorrectly structured submissions or missing files. Participants are encouraged to test their solutions using the provided evaluation scripts before submission to ensure that they are working correctly and producing valid results.
 
+## Baseline model
+
+Baseline model is ConvNext-Base pretrained on ImageNet-1K and finetuned on the public dataset for the identification task with following hyperparameters:
+trained on the public dataset for the identification task with following hyperparameters:
+- optimizer: AdamW
+- learning rate: 1e-4
+- weight decay: 1e-3
+- batch size: 64
+- epochs: 100
+
+Baseline model performance on the sequestered dataset is as follows:
+- VER@0.1%FAR: 26.23%
+- VER@1%FAR: 46.31%
+- EER: 15.69%
+- AUC: 92.15%
+- Number of parameters: 87564416
+- Model size: 350257664
+
 ## Evaluation Process
 
 The evaluation process will be conducted in two phases:
 1. Interim Evaluations: In this phase, the submitted solution feature vectors of the sequestered dataset will be evaluated. The interim evaluations will provide feedback to the participants on the performance of their solutions and allow them to make improvements before the final evaluation. Participants are encouraged to use the interim evaluations to improve their solutions and achieve better performance in the final evaluation.
 2. Final Evaluation: In this phase, the submitted solutions will be evaluated on the sequestered dataset using the defined evaluation metrics. The final evaluation will determine the final ranking of the solutions based on their performance on the sequestered dataset. The final evaluation will be conducted after the submission deadline and the results will be announced shortly after the evaluation is completed. During the final evaluation, the organizers will compute the performance metrics for each solution based on the defined evaluation criteria and compute the final score using the scoring function defined in score.py. For both Tracks, accuracy metrics will be computed based on the performance of the solutions on the extracted features from the anonymized sequestered dataset. For Track 2, the final evaluation of inference time will be conducted using the submitted model weights and the defined evaluation protocol on defined hardware (Raspberry Pi 4). The organizers will ensure that the evaluation is conducted in a fair and consistent manner for all solutions.
+
+Only solutions outperforming the baseline will be included in the final ranking. The baseline performance will be determined based on the performance of a simple modelon the sequestered dataset. The baseline performance will be announced after the submission deadline and before the final evaluation to allow participants to compare their solutions against the baseline.
 
 ## Questions and Support
 
