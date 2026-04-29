@@ -61,8 +61,8 @@ def compute_rt1(metrics, stats):
     size = metrics.get("model_size", 1)
 
     v = normalize(ver, stats["ver_min"], stats["ver_max"])
-    p = normalize(np.log(params), stats["p_min"], stats["p_max"])
-    s = normalize(np.log(size), stats["s_min"], stats["s_max"])
+    p = 1 - normalize(np.log(params), stats["p_min"], stats["p_max"])  # Penalize larger models
+    s = 1 - normalize(np.log(size), stats["s_min"], stats["s_max"])  # Penalize larger sizes
 
     return 0.5 * v + 0.2 * p + 0.3 * s
 
@@ -72,6 +72,6 @@ def compute_rt2(metrics, stats):
     latency = metrics["inference_time"]
 
     v = normalize(ver, stats["ver_min"], stats["ver_max"])
-    t = normalize(latency, stats["t_min"], stats["t_max"])
+    t = 1 - normalize(latency, stats["t_min"], stats["t_max"])  # Penalize slower inference times
 
     return 0.7 * v + 0.3 * t

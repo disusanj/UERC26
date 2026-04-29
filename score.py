@@ -19,23 +19,25 @@ if __name__ == "__main__":
     # Go through each submission directory
     for submission in os.listdir(ROOT_DIR):
         submission_path = os.path.join(ROOT_DIR, submission)
-        config_path = os.path.join(submission_path, 'config.ini')
-
-        # Read config
-        config = configparser.ConfigParser()
-        config.read(config_path)
-
-        submitted_track = config.get("SUBMISSION", "track")
-        submission_name = config.get("SUBMISSION", "name")
 
         if os.path.isdir(submission_path):
+            config_path = os.path.join(submission_path, 'config.ini')
+
+            # Read config
+            config = configparser.ConfigParser()
+            config.read(config_path)
+
+            submitted_track = config.get("SUBMISSION", "track")
+            submission_name = config.get("SUBMISSION", "name")
+
             metrics_file = os.path.join(submission_path, "metrics.json")
 
             if not os.path.exists(metrics_file):
                 print(f"No metrics found for {submission}, skipping...")
                 continue
 
-            with open(metrics_file, "r") as f:                METRICS[submission] = json.load(f)
+            with open(metrics_file, "r") as f:
+                METRICS[submission] = json.load(f)
 
             # Load model stats for this submission
             stats_file = os.path.join(submission_path, "model_stats.json")
@@ -62,8 +64,8 @@ if __name__ == "__main__":
             for key in METRICS[submission]["0"].keys():
                 avg_metrics[submission][key] = np.mean([METRICS[submission][ri][key] for ri in RUN_IDS])
 
-        for key in MODEL_STATS[submission].keys():
-            avg_metrics[submission][key] = MODEL_STATS[submission][key]
+            for key in MODEL_STATS[submission].keys():
+                avg_metrics[submission][key] = MODEL_STATS[submission][key]
 
         stats = get_min_max_stats(avg_metrics)
 
