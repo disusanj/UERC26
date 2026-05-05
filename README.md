@@ -36,7 +36,6 @@ This is the main evaluation script for the UERC26. It will compute performance f
 
 This is a script that can be used to evaluate the performance of the extracted features from the images in the anonymized sequestered dataset. It will go through all the solutions in the SUBMISSIONS folder, load the corresponding extracted features and compute performance metrics based on the extracted features. The computed metrics will be stored in a file called metrics.json in the same folder as the solution. The script will also print out the performance metrics for each solution and the overall ranking based on the computed metrics.
 
-
 ### score.py
 
 This file contains the implementation of the scoring function for the UERC26. The scoring function takes in the computed metrics for each solution in corresponding submission folder and computes a final score based on the defined evaluation criteria. The score is computed based on the RT1 and RT2 metrics, as well as the inference time. The scoring function will be used to determine the final ranking of the solutions based on their performance on the sequestered dataset.
@@ -76,7 +75,6 @@ Each solution should be submitted as a zip file containing the solution folder w
 ## Baseline model
 
 Baseline model is ConvNext-Base pretrained on ImageNet-1K and finetuned on the public dataset for the identification task with following hyperparameters:
-trained on the public dataset for the identification task with following hyperparameters:
 - optimizer: AdamW
 - learning rate: 1e-4
 - weight decay: 1e-3
@@ -91,13 +89,17 @@ Baseline model performance on the sequestered dataset is as follows:
 - Number of parameters: 87564416
 - Model size: 350257664
 
+## Scoring
+
+Submissions are evaluated against a provided baseline model that serves as the anchor for all score normalization. Both ranking tracks use Verification Rate at FAR=0.1% (VER@0.1%) as the primary accuracy metric, computed from the ROC curve over all sequestered dataset pairs. The baseline's VER@0.1% sets the floor for performance normalization. Similarly, the baseline's parameter count and model size define the upper bounds for **Track 1**, so only models smaller and more compact than the baseline can achieve a positive size/parameter score. The final composite scores are RT1 = 0.5v + 0.2p + 0.3s and RT2 = 0.7v + 0.3t, where all components are min–max normalized within these baseline-anchored bounds requiring competitors to surpass the baseline in both accuracy and efficiency to rank well.
+
 ## Evaluation Process
 
 The evaluation process will be conducted in two phases:
 1. Interim Evaluations: In this phase, the submitted solution feature vectors of the sequestered dataset will be evaluated. The interim evaluations will provide feedback to the participants on the performance of their solutions and allow them to make improvements before the final evaluation. Participants are encouraged to use the interim evaluations to improve their solutions and achieve better performance in the final evaluation.
 2. Final Evaluation: In this phase, the submitted solutions will be evaluated on the sequestered dataset using the defined evaluation metrics. The final evaluation will determine the final ranking of the solutions based on their performance on the sequestered dataset. The final evaluation will be conducted after the submission deadline and the results will be announced shortly after the evaluation is completed. During the final evaluation, the organizers will compute the performance metrics for each solution based on the defined evaluation criteria and compute the final score using the scoring function defined in score.py. For both Tracks, accuracy metrics will be computed based on the performance of the solutions on the extracted features from the anonymized sequestered dataset. For Track 2, the final evaluation of inference time will be conducted using the submitted model weights and the defined evaluation protocol on defined hardware (Raspberry Pi 4). The organizers will ensure that the evaluation is conducted in a fair and consistent manner for all solutions.
 
-Only solutions outperforming the baseline will be included in the final ranking. The baseline performance will be determined based on the performance of a simple modelon the sequestered dataset. The baseline performance will be announced after the submission deadline and before the final evaluation to allow participants to compare their solutions against the baseline.
+Only solutions outperforming the baseline will be included in the final ranking. The baseline performance will be determined based on the performance of a simple model on the sequestered dataset.
 
 ## Questions and Support
 

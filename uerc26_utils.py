@@ -41,7 +41,7 @@ def normalize(x, xmin, xmax):
     return (x - xmin) / (xmax - xmin)
 
 
-def get_min_max_stats(metrics):
+def get_min_max_stats(metrics, baseline_metrics=None):
     stats = {
         "ver_min": min(m["VER@0.1%"] for m in metrics.values()),
         "ver_max": max(m["VER@0.1%"] for m in metrics.values()),
@@ -52,6 +52,20 @@ def get_min_max_stats(metrics):
         "t_min": min(m.get("inference_time", float('inf')) for m in metrics.values()),
         "t_max": max(m.get("inference_time", float('-inf')) for m in metrics.values())
     }
+
+    if baseline_metrics is not None:
+        print("Incorporating baseline metrics into min-max stats")
+        print(f"Baseline VER@0.1%: {baseline_metrics.get('VER@0.1%', 'N/A')}")
+        print(f"Baseline num_parameters: {baseline_metrics.get('num_parameters', 'N/A')}")
+        print(f"Baseline model_size: {baseline_metrics.get('model_size', 'N/A')}")
+        print(f"Baseline inference_time: {baseline_metrics.get('inference_time', 'N/A')}")
+        print("---------------------------------------")
+
+        stats["ver_min"] = max(stats["ver_min"], baseline_metrics.get("VER@0.1%", stats["ver_min"]))
+        stats["p_max"] = min(stats["p_max"], np.log(baseline_metrics.get("num_parameters", 1)))
+        stats["s_max"] = min(stats["s_max"], np.log(baseline_metrics.get("model_size", 1)))
+        stats["t_max"] = min(stats["t_max"], baseline_metrics.get("inference_time", float('-inf')))
+
     return stats
 
 
@@ -64,7 +78,7 @@ def compute_rt1(metrics, stats):
     p = 1 - normalize(np.log(params), stats["p_min"], stats["p_max"])  # Penalize larger models
     s = 1 - normalize(np.log(size), stats["s_min"], stats["s_max"])  # Penalize larger sizes
 
-    return 0.5 * v + 0.2 * p + 0.3 * s
+    return 0.5 * v + 0.2 * p + 0.3 * s, v, p, s
 
 
 def compute_rt2(metrics, stats):
@@ -74,4 +88,4 @@ def compute_rt2(metrics, stats):
     v = normalize(ver, stats["ver_min"], stats["ver_max"])
     t = 1 - normalize(latency, stats["t_min"], stats["t_max"])  # Penalize slower inference times
 
-    return 0.7 * v + 0.3 * t
+    return 0.7 * v + 0.3 * t, v, t

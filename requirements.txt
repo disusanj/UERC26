@@ -6,3 +6,5 @@ matplotlib
 namegenerator
 tqdm
 timm
+torchmetrics
+termcolor

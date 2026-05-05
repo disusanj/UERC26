@@ -45,6 +45,8 @@ def init_solution(submission_path, track):
     model_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(model_module)
 
+    print(f"Initialized solution for submission: {submission_name}, Track: {submitted_track}, Model Class: {model_class_name}")
+
     # Load solution model and its parameters
     model_class = getattr(model_module, model_class_name)
     model = model_class().model
@@ -73,6 +75,17 @@ def init_solution(submission_path, track):
     return solution
 
 
+def get_model_size(model):
+    total_param_count = 0
+    total_param_bytes = 0
+
+    for _, tensor in model.state_dict().items():
+        total_param_count += tensor.numel()
+        total_param_bytes += tensor.numel() * tensor.element_size()
+
+    return {"num_parameters": total_param_count, "model_size": total_param_bytes}
+
+
 def evaluate_submission(solution):
     solution.warmup(runs=WARMUP_RUNS, evaluations_per_run=WARMUP_EVALUATIONS_PER_RUN)
 
@@ -84,13 +97,20 @@ if __name__ == "__main__":
 
     # Go through each submission directory
     for submission in os.listdir(ROOT_DIR):
+        print(f"Processing submission: {submission}")
+
         submission_path = os.path.join(ROOT_DIR, submission)
         if os.path.isdir(submission_path):
             # Initialize the solution for this submission and track
             solution = init_solution(submission_path, TRACK)
 
             stats_file = os.path.join(submission_path, "model_stats.json")
-            model_stats = solution.get_model_stats()
+
+            try:
+                model_stats = get_model_size(solution.model)
+            except Exception as e:
+                print(f"Error occurred while fetching model stats for {submission}: {e}")
+                model_stats = {"num_parameters": 0, "model_size": 0}
 
             # Store the model stats for this submission in a JSON file for later analysis
             with open(stats_file, "w") as f:
