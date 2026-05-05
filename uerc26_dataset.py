@@ -318,10 +318,10 @@ if __name__ == "__main__":
     print(f'Test samples: {len(uerc26_identification_test)}')
 
 
-    uerc26_pairwise_train = UERCPairwiseDataset('train', root_dir='data/public', full_image_list_csv='image_list.csv', data_split_csv='dataset_split.csv', pairs_csv='pairs_train.csv')
+    uerc26_pairwise_train = UERCPairwiseDataset('train', root_dir='data/public', full_image_list_csv='image_list.csv', data_split_csv='dataset_split.csv', pairs_csv='pairs_train.csv', num_pairs_per_subject=100)
     print(f'Pairwise train samples: {len(uerc26_pairwise_train)}')
 
-    uerc26_pairwise_val = UERCPairwiseDataset('val', root_dir='data/public', full_image_list_csv='image_list.csv', data_split_csv='dataset_split.csv', pairs_csv='pairs_val.csv')
+    uerc26_pairwise_val = UERCPairwiseDataset('val', root_dir='data/public', full_image_list_csv='image_list.csv', data_split_csv='dataset_split.csv', pairs_csv='pairs_val.csv', num_pairs_per_subject=100)
     print(f'Pairwise validation samples: {len(uerc26_pairwise_val)}')
 
     uerc26_pairwise_test = UERCPairwiseDataset('test', root_dir='data/public', full_image_list_csv='image_list.csv', data_split_csv='dataset_split.csv', pairs_csv='pairs_test.csv', num_pairs_per_subject=100)
